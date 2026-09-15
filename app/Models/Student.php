@@ -13,4 +13,9 @@ class Student extends Model
         'date_of_birth',
         'is_active',
     ];
+
+    public function checkIns()
+    {
+        return $this->hasMany(CheckIn::class);
+    }
 }

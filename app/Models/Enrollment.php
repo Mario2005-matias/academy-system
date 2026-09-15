@@ -15,4 +15,14 @@ class Enrollment extends Model
         'status',
         'status_payment',
     ];
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
+    }
+
+    public function plan()
+    {
+        return $this->belongsTo(Plan::class);
+    }
 }

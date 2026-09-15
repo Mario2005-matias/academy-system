@@ -12,4 +12,9 @@ class Payment extends Model
         'payment_date',
         'payment_method',
     ];
+
+    public function enrollment()
+    {
+        return $this->belongsTo(Enrollment::class);
+    }
 }
