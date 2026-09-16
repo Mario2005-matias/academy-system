@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->enum('role', ['admin', 'recepcionista'])
                 ->default('recepcionista')
-                ->after('email');
+                ->after('email')
+                ->nullable();
 
             $table->boolean('is_active')->default(true)->after('role');
         });

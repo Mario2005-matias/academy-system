@@ -5,57 +5,27 @@ namespace App\Http\Controllers\V1\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Resources\UserResource;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    public function __construct(private readonly AuthService $authService)
-    {
-    }
+    public function __construct(private readonly AuthService $authService){}
 
-    /**
-     * Sign up: cria um novo utilizador (Recepcionista ou Administrador).
-     */
     public function register(RegisterRequest $request)
     {
-        $user = $this->authService->register($request->validated());
-
-        return response()->json([
-            'message' => 'Utilizador criado com sucesso.',
-            'user' => $user,
-        ], 201);
+        return $this->respond($this->authService->register($request->validated()));
     }
 
-    /**
-     * Login: recebe email e senha, devolve token de acesso (Sanctum).
-     */
     public function login(LoginRequest $request)
     {
-        $result = $this->authService->authenticate(
+        return $this->respond($this->authService->authenticate(
             $request->validated('email'),
             $request->validated('password'),
-        );
-
-        if (! $result['success']) {
-            return response()->json(['message' => $result['message']], $result['status']);
-        }
-
-        return response()->json([
-            'message' => $result['message'],
-            'user' => [
-                'id'    => $result['user']->id,
-                'name'  => $result['user']->name,
-                'email' => $result['user']->email,
-                'role'  => $result['user']->role,
-            ],
-            'token' => $result['token'],
-        ]);
+        ));
     }
 
-    /**
-     * Logout: revoga o token atual.
-     */
     public function logout(Request $request)
     {
         $this->authService->logout($request->user());
@@ -63,16 +33,34 @@ class AuthController extends Controller
         return response()->json(['message' => 'Logout efetuado com sucesso.']);
     }
 
-    /**
-     * Me: retorna os dados do utilizador autenticado.
-     */
     public function me(Request $request)
     {
-        if(! $request->user()) {
+        if (! $request->user()) {
             return response()->json(['message' => 'Não autenticado.'], 401);
         }
-        
-        return response()->json($request->user());
+
+        return response()->json([
+            'message' => 'Usuário autenticado.',
+            'user' => new UserResource($request->user()),
+        ]);
+    }
+
+    /**
+     * Traduz o array padronizado do AuthService ($result) numa resposta HTTP,
+     * usada por register() e login() — os dois únicos métodos que devolvem esse formato.
+     */
+    private function respond(array $result)
+    {
+        $payload = ['message' => $result['message']];
+
+        if ($result['success']) {
+            $payload['user'] = $result['user'];
+
+            if ($result['token']) {
+                $payload['token'] = $result['token'];
+            }
+        }
+
+        return response()->json($payload, $result['status']);
     }
 }
-
