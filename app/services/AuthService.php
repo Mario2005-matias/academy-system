@@ -7,59 +7,53 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthService
 {
+    public function register(array $data): array
+    {
+        $user = User::create([
+            'name'      => $data['name'],
+            'email'     => $data['email'],
+            'password'  => Hash::make($data['password']),
+            'role'      => $data['role'],
+            'is_active' => true,
+        ]);
+
+        return $this->result(true, 201, 'Utilizador criado com sucesso.', $user);
+    }
+
     public function authenticate(string $email, string $password): array
     {
         $user = User::where('email', $email)->first();
 
         if (! $user || ! Hash::check($password, $user->password)) {
-            return [
-                'success' => false,
-                'status'  => 401,
-                'message' => 'Credenciais inválidas.',
-                'user'    => null,
-                'token'   => null,
-            ];
+            return $this->result(false, 401, 'Credenciais inválidas.');
         }
 
         if (! $user->is_active) {
-            return [
-                'success' => false,
-                'status'  => 403,
-                'message' => 'Utilizador inativo. Contacte o administrador.',
-                'user'    => null,
-                'token'   => null,
-            ];
+            return $this->result(false, 403, 'Utilizador inativo. Contacte o administrador.');
         }
 
         $token = $user->createToken('auth_token_' . now()->timestamp)->plainTextToken;
 
-        return [
-            'success' => true,
-            'status'  => 200,
-            'message' => 'Login efetuado com sucesso.',
-            'user'    => $user,
-            'token'   => $token,
-        ];
+        return $this->result(true, 200, 'Login efetuado com sucesso.', $user, $token);
     }
 
-    /**
-     * Revoga o token atualmente em uso.
-     */
     public function logout(User $user): void
     {
         $user->currentAccessToken()->delete();
     }
 
     /**
-     * Cria um novo utilizador (aplica regra: senha sempre com hash).
+     * Monta a resposta padronizada usada por todos os métodos do service:
+     * ['success' => bool, 'status' => int, 'message' => string, 'user' => ?User, 'token' => ?string]
      */
-    public function createUser(array $data): User
+    private function result(bool $success, int $status, string $message, ?User $user = null, ?string $token = null): array
     {
-        return User::create([
-            'name'     => $data['name'],
-            'email'    => $data['email'],
-            'password' => Hash::make($data['password']),
-            'role'     => $data['role'],
-        ]);
+        return [
+            'success' => $success,
+            'status'  => $status,
+            'message' => $message,
+            'user'    => $user,
+            'token'   => $token,
+        ];
     }
 }
