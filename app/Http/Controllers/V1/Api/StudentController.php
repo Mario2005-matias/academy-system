@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\V1\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\students\StoreRequest;
+use App\Http\Requests\students\UpdateRequest;
+use App\Http\Resources\StudentResource;
+use App\Models\Student;
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
@@ -15,51 +19,47 @@ class StudentController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(StoreRequest $request)
     {
-        //
+        $validatedData = $request->validated();
+
+        $student = Student::create($validatedData);
+
+        return response()->json([
+            'message' => 'Student created successfully',
+            'data' => new StudentResource($student),
+        ], 201);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function show(Student $student)
     {
-        //
+        return response()->json([
+            'message' => 'Student retrieved successfully',
+            'data' => new StudentResource($student),
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(UpdateRequest $request, Student $student)
     {
-        //
+        $student->update($request->validated());
+        return response()->json([
+            'message' => 'Student updated successfully',
+            'data' => new StudentResource($student),
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function destroy(Student $student)
     {
-        //
-    }
+        if(!$student) {
+            return response()->json([
+                'message' => 'Student not found',
+            ], 404);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        $student->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return response()->json([
+            'message' => 'Student deleted successfully',
+        ]);
     }
 }
