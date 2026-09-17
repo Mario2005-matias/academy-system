@@ -16,7 +16,11 @@ class StudentController extends Controller
      */
     public function index()
     {
-        //
+        $students = Student::where('is_active', true)->get();
+        return response()->json([
+            'message' => 'Students retrieved successfully',
+            'data' => StudentResource::collection($students),
+        ]);
     }
 
     public function store(StoreRequest $request)
