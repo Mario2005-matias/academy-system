@@ -30,7 +30,19 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/checkins', [CheckInController::class, 'store'])->name('checkins.store');
     });
 
+<<<<<<< HEAD
     Route::middleware('role:administrador')->group(function () {
+=======
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/plans', [PlanController::class, 'index'])->name('plans.index');
+        Route::get('/plans/{plan}', [PlanController::class, 'show'])->name('plans.show');
+        Route::post('/plans', [PlanController::class, 'store'])->name('plans.store');
+        Route::put('/plans/{plan}', [PlanController::class, 'update'])->name('plans.update');
+        Route::patch('/plans/{plan}/status', [PlanController::class, 'updateStatus'])->name('plans.update.status');
+        Route::delete('/plans/{plan}', [PlanController::class, 'destroy'])->name('plans.destroy');
+
+
+>>>>>>> feat/plans
         Route::get('/plans', [PlanController::class, 'index'])->name('plans.index');
         Route::delete('/payments/{id}', [PaymentController::class, 'destroy'])->name('payments.destroy');
         Route::apiResource('teachers', TeacherController::class);
