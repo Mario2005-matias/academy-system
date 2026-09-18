@@ -25,21 +25,20 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update');
         Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
 
-
-        Route::get('/plans', [PlanController::class, 'index'])->name('plans.index');
-        Route::post('/plans', [PlanController::class, 'store'])->name('plans.store');
-        Route::get('/plans/{plan}', [PlanController::class, 'show'])->name('plans.show');
-        Route::put('/plans/{plan}', [PlanController::class, 'update'])->name('plans.update');
-        Route::patch('/plans/{plan}/status', [PlanController::class, 'updateStatus'])->name('plans.update.status');
-        Route::delete('/plans/{plan}', [PlanController::class, 'destroy'])->name('plans.destroy');
-
-
         Route::post('/enrollments', [EnrollementController::class, 'store'])->name('enrollments.store');
         Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
         Route::post('/checkins', [CheckInController::class, 'store'])->name('checkins.store');
     });
 
-    Route::middleware('role:administrador')->group(function () {
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/plans', [PlanController::class, 'index'])->name('plans.index');
+        Route::get('/plans/{plan}', [PlanController::class, 'show'])->name('plans.show');
+        Route::post('/plans', [PlanController::class, 'store'])->name('plans.store');
+        Route::put('/plans/{plan}', [PlanController::class, 'update'])->name('plans.update');
+        Route::patch('/plans/{plan}/status', [PlanController::class, 'updateStatus'])->name('plans.update.status');
+        Route::delete('/plans/{plan}', [PlanController::class, 'destroy'])->name('plans.destroy');
+
+
         Route::get('/plans', [PlanController::class, 'index'])->name('plans.index');
         Route::delete('/payments/{id}', [PaymentController::class, 'destroy'])->name('payments.destroy');
         Route::apiResource('teachers', TeacherController::class);

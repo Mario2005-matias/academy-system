@@ -17,7 +17,12 @@ class PlanController extends Controller
      */
     public function index()
     {
-        //
+        $plans = Plan::where('is_active', true)->get();
+
+        return response()->json([
+            'message' => 'Plans retrieved successfully',
+            'data' => PlanResource::collection($plans),
+        ]);
     }
 
     /**
@@ -63,7 +68,7 @@ class PlanController extends Controller
         $plan->save();
 
         return response()->json([
-            'message' => $plan->is_active ? 'Plan activated successfully' : 'Plan deactivated successfully',
+            'message' => $plan->is_active ? 'Plan activated successfully' : 'Plan desactivated successfully',
             'data' => new PlanResource($plan),
         ]);
     }
