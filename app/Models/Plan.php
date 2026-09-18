@@ -11,5 +11,6 @@ class Plan extends Model
         'description',
         'value',
         'duration',
+        'is_active',
     ];
 }

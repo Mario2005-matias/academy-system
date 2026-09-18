@@ -4,6 +4,10 @@ namespace App\Http\Controllers\V1\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\Plans\StoreRequest;
+use App\Http\Requests\Plans\UpdateRequest;
+use App\Http\Resources\PlanResource;
+use App\Models\Plan;
 
 class PlanController extends Controller
 {
@@ -16,19 +20,16 @@ class PlanController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        //
+        $plan = Plan::create($request->validated());
+
+        return response()->json([
+            'message' => 'Plan created successfully',
+            'data' => new PlanResource($plan),
+        ], 201);
     }
 
     /**
@@ -40,17 +41,9 @@ class PlanController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateRequest $request, string $id)
     {
         //
     }

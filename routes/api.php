@@ -25,6 +25,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update');
         Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
 
+
+        Route::get('/plans', [PlanController::class, 'index'])->name('plans.index');
+        Route::post('/plans', [PlanController::class, 'store'])->name('plans.store');
+        Route::get('/plans/{plan}', [PlanController::class, 'show'])->name('plans.show');
+        Route::put('/plans/{plan}', [PlanController::class, 'update'])->name('plans.update');
+        Route::delete('/plans/{plan}', [PlanController::class, 'destroy'])->name('plans.destroy');
+
+
         Route::post('/enrollments', [EnrollementController::class, 'store'])->name('enrollments.store');
         Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
         Route::post('/checkins', [CheckInController::class, 'store'])->name('checkins.store');
