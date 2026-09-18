@@ -30,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/plans', [PlanController::class, 'store'])->name('plans.store');
         Route::get('/plans/{plan}', [PlanController::class, 'show'])->name('plans.show');
         Route::put('/plans/{plan}', [PlanController::class, 'update'])->name('plans.update');
+        Route::patch('/plans/{plan}/status', [PlanController::class, 'updateStatus'])->name('plans.update.status');
         Route::delete('/plans/{plan}', [PlanController::class, 'destroy'])->name('plans.destroy');
 
 
