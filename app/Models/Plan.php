@@ -11,9 +11,6 @@ class Plan extends Model
         'description',
         'value',
         'duration',
-<<<<<<< HEAD
-=======
         'is_active',
->>>>>>> feat/plans
     ];
 }
