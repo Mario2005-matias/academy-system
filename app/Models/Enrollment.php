@@ -16,6 +16,12 @@ class Enrollment extends Model
         'status_payment',
     ];
 
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
+        'value_paid' => 'decimal:2',
+    ];
+
     public function student()
     {
         return $this->belongsTo(Student::class);

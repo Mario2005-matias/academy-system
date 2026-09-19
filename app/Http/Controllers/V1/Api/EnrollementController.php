@@ -3,63 +3,53 @@
 namespace App\Http\Controllers\V1\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Enrollements\StoreEnrollmentRequest;
+use App\Http\Requests\Enrollements\UpdateEnrollmentRequest;
+use App\Http\Resources\EnrollmentResource;
+use App\Models\Enrollment;
+use App\Services\EnrollmentService;
 use Illuminate\Http\Request;
 
 class EnrollementController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct(protected EnrollmentService $enrollmentService) {}
+
     public function index()
     {
-        //
+        return EnrollmentResource::collection(
+            $this->enrollmentService->paginate()
+        );
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(StoreEnrollmentRequest $request)
     {
-        //
+        $enrollment = $this->enrollmentService->create($request->validated());
+
+        return response()->json([
+            'message' => 'Enrollment created successfully',
+            'data'    => new EnrollmentResource($enrollment),
+        ], 201);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function show(Enrollment $enrollment)
     {
-        //
+        return new EnrollmentResource($enrollment->load(['student', 'plan']));
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(UpdateEnrollmentRequest $request, Enrollment $enrollment)
     {
-        //
+        $enrollment = $this->enrollmentService->update($enrollment, $request->validated());
+
+        return response()->json([
+            'message' => 'Enrollment updated successfully',
+            'data'    => new EnrollmentResource($enrollment),
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function destroy(Enrollment $enrollment)
     {
-        //
-    }
+        $enrollment->delete();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return response()->json(['message' => 'Enrollment deleted successfully']);
     }
 }

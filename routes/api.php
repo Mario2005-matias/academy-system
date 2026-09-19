@@ -8,7 +8,6 @@ use App\Http\Controllers\V1\Api\PlanController;
 use App\Http\Controllers\V1\Api\ReportController;
 use App\Http\Controllers\V1\Api\StudentController;
 use App\Http\Controllers\V1\Api\TeacherController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -25,7 +24,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update');
         Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
 
-        Route::post('/enrollments', [EnrollementController::class, 'store'])->name('enrollments.store');
+        Route::apiResource('/enrollments', EnrollementController::class);
+
         Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
         Route::post('/checkins', [CheckInController::class, 'store'])->name('checkins.store');
     });
