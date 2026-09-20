@@ -13,6 +13,7 @@ class PaymentService
     {
         $enrollment = Enrollment::findOrFail($data['enrollment_id']);
 
+        $this->ensureNotDuplicate($enrollment, $data);
         $this->ensureValueDoesNotExceedBalance($enrollment, $data['value']);
 
         return DB::transaction(function () use ($enrollment, $data) {
@@ -49,5 +50,20 @@ class PaymentService
         $enrollment->update([
             'status_payment' => $remaining <= 0 ? 'paid' : 'unpaid',
         ]);
+    }
+
+    protected function ensureNotDuplicate(Enrollment $enrollment, array $data)
+    {
+        $exists = $enrollment->payments()
+            ->where('payment_date', $data['payment_date'])
+            ->where('value', $data['value'])
+            ->where('payment_method', $data['payment_method'])
+            ->exists();
+
+        if ($exists) {
+            throw ValidationException::withMessages([
+                'duplicate' => 'Um pagamento com os mesmos detalhes já existe para esta matrícula.',
+            ]);
+         }
     }
 }

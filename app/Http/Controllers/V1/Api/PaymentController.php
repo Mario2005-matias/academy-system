@@ -25,9 +25,7 @@ class PaymentController extends Controller
      */
     public function store(StorePaymentRequest $request)
     {
-        dd($request);
         $payment = $this->paymentService->create($request->validated());
-
 
         return response()->json([
             'message' => 'Pagamento criado com sucesso.',
