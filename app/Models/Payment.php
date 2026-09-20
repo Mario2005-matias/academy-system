@@ -13,6 +13,11 @@ class Payment extends Model
         'payment_method',
     ];
 
+    protected $casts = [
+        'payment_date' => 'datetime',
+        'value' => 'decimal:2',
+    ];
+
     public function enrollment()
     {
         return $this->belongsTo(Enrollment::class);

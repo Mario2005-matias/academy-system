@@ -3,32 +3,36 @@
 namespace App\Http\Controllers\V1\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Payments\StorePaymentRequest;
+use App\Services\PaymentService;
 use Illuminate\Http\Request;
+use App\Models\Enrollment;
+use App\Http\Resources\PaymentResource;
 
 class PaymentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
+    public function __construct(protected PaymentService $paymentService) {}
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function index(Enrollment $enrollment)
     {
-        //
+        return PaymentResource::collection(
+            $enrollment->payments()->latest()->get()
+        );
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StorePaymentRequest $request)
     {
-        //
+        dd($request);
+        $payment = $this->paymentService->create($request->validated());
+
+
+        return response()->json([
+            'message' => 'Pagamento criado com sucesso.',
+            'data' => new PaymentResource($payment),
+        ], 201);
     }
 
     /**
