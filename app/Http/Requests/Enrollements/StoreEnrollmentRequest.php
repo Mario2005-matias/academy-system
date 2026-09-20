@@ -31,6 +31,7 @@ class StoreEnrollmentRequest extends FormRequest
             'value_paid'     => ['required', 'numeric', 'min:0'],
             'status'         => ['sometimes', Rule::in(['active', 'completed', 'cancelled'])],
             'status_payment' => ['sometimes', Rule::in(['paid', 'unpaid'])],
+            'idempotency-key' => ['required', 'uuid', 'unique:enrollments,idempontency_key']
         ];
     }
 }

@@ -27,6 +27,7 @@ class StorePaymentRequest extends FormRequest
             "payment_method" => "required|string|in:TPA,Transferencia,Express",
             "payment_date" => "required|date",
             "value" => "required|numeric|min:0",
+            "idempontency-key" => ['required', 'uuid', 'unique:payments,idempotency_key']
         ];
     }
 }
