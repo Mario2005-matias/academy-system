@@ -26,7 +26,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::apiResource('/enrollments', EnrollementController::class);
 
+        Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
+        Route::get('/payments/{payment}', [PaymentController::class, 'show'])->name('payments.show');
         Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
+        Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
+
         Route::post('/checkins', [CheckInController::class, 'store'])->name('checkins.store');
     });
 

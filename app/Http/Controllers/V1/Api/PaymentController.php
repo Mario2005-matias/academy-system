@@ -8,6 +8,7 @@ use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use App\Models\Enrollment;
 use App\Http\Resources\PaymentResource;
+use App\Models\Payment;
 
 class PaymentController extends Controller
 {
@@ -15,9 +16,12 @@ class PaymentController extends Controller
 
     public function index(Enrollment $enrollment)
     {
-        return PaymentResource::collection(
-            $enrollment->payments()->latest()->get()
-        );
+        $payments = Payment::paginate(15);
+
+        return response()->json([
+            'message' => '',
+            'data' => PaymentResource::collection($payments)
+        ]);
     }
 
     /**
@@ -36,17 +40,12 @@ class PaymentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Payment $payment)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        return response()->json([
+            'message' => 'Pagamento encontrado com sucesso',
+            'data' => new PaymentResource($payment)
+        ]);
     }
 
     /**
@@ -60,8 +59,12 @@ class PaymentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Payment $payment)
     {
-        //
+        $payment->delete();
+
+        return response()->json([
+            'message' => 'Pagamaneto eliminado com sucesso',
+        ], 200);
     }
 }
