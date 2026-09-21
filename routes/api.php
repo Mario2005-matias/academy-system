@@ -32,6 +32,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
 
         Route::post('/checkins', [CheckInController::class, 'store'])->name('checkins.store');
+
+        Route::get('/check_in', [CheckInController::class, 'index']);
+        Route::post('/check_in', [CheckInController::class, 'store']);
     });
 
     Route::middleware('role:admin')->group(function () {
