@@ -33,8 +33,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::post('/checkins', [CheckInController::class, 'store'])->name('checkins.store');
 
-        Route::get('/check_in', [CheckInController::class, 'index']);
-        Route::post('/check_in', [CheckInController::class, 'store']);
+        Route::get('/check_in', [CheckInController::class, 'index'])->name('checkIn.index');
+        Route::post('/check_in', [CheckInController::class, 'store'])->name('checkIn.store');
+        Route::get('/students/{student}/attendance', [CheckInController::class, 'attendance'])->name('checkIn.attendance');
     });
 
     Route::middleware('role:admin')->group(function () {

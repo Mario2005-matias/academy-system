@@ -29,4 +29,18 @@ class CheckInController extends Controller
             'data'    => new CheckInResource($checkIn),
         ], 201);
     }
+
+    public function attendance(Request $request, Student $student)
+    {
+        $days = $this->checkInService->countPresentDays(
+            $student,
+            $request->query('start_date'),
+            $request->query('end_date'),
+        );
+
+        return response()->json([
+            'student_id'   => $student->id,
+            'days_present' => $days,
+        ]);
+    }
 }

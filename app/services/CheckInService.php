@@ -34,4 +34,13 @@ class CheckInService
             ]);
         }
     }
+
+    public function countPresentDays(Student $student, ?string $startDate = null, ?string $endDate = null): int
+    {
+        return $student->checkIns()
+            ->when($startDate, fn($q) => $q->whereDate('check_in_date', '>=', $startDate))
+            ->when($endDate, fn($q) => $q->whereDate('check_in_date', '<=', $endDate))
+            ->distinct('check_in_date')
+            ->count('check_in_date');
+    }
 }
